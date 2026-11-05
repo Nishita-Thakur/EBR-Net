@@ -1,0 +1,42 @@
+# ============================================================
+# model_baseline.yaml — reproduces the ORIGINAL paper exactly:
+#   DWT: LL-only, fixed (no gating)
+#   BDM: U-Net + FlashAttention, Brownian bridge
+#   ECRF: fixed 11x11 boundary expansion + SSIM term
+# Use this to sanity-check your training/eval pipeline against
+# the numbers reported in Tables 1, 2, 5, 6, 7, 8.
+# ============================================================
+
+experiment_name: "wbdm_ecrf_baseline"
+
+dwt:
+  type: "static"          # static_dwt.py — LL-only extraction
+  wavelet: "haar"
+  keep_subbands: ["LL"]
+
+bdm:
+  unet:
+    in_channels: 3         # LL_RGB
+    base_channels: 64
+    channel_mults: [1, 2, 4, 8]
+    use_flash_attention: true
+    attention_resolutions: [16]  # apply attention at this feature-map resolution
+  boundary_head:
+    enabled: false          # baseline has no auxiliary boundary output
+  bridge:
+    type: "brownian_bridge"
+
+uncertainty:
+  enabled: false
+
+ecrf:
+  type: "static"           # static_ecrf.py
+  window_size: 11
+  sigma_spatial: 1.0
+  sigma_color: 2.0
+  sigma_ssim: 2.0
+  ssim_window: 11
+  prior_prob: 0.9          # P(x_i) in unary potential, Eq. 15
+  postprocess:
+    dilation: true
+    gaussian_smoothing: true

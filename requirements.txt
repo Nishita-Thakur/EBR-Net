@@ -1,0 +1,15 @@
+matplotlib==3.9.0
+matplotlib-inline==0.1.7
+numpy==1.26.4
+opencv @ file:///opencv-4.7.0/modules/python/package
+opencv-python-headless==5.0.0.93
+scikit-image==0.25.2
+scikit-learn==1.7.2
+timm==1.0.30
+torch==2.4.0+cu124
+torch-complex==0.4.4
+torch-stoi==0.2.3
+torch-tensorrt @ file:///opt/pytorch/torch_tensorrt/dist/torch_tensorrt-2.4.0a0-cp310-cp310-linux_x86_64.whl#sha256=786064dc6edbf9aacf6984a92c887e483a57bf30c201aee95d6a8d388f23f27b
+torchaudio==2.4.0+cu124
+torchsummary==1.5.1
+torchvision==0.19.0+cu124

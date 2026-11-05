@@ -1,0 +1,27 @@
+seed: 42
+data:
+  image_size: 64
+  channels: 3
+  datasets:
+    isic2016:
+      train_images: "subset_data/train/images"
+      train_masks:  "subset_data/train/masks"
+      test_images:  "subset_data/test/images"
+      test_masks:   "subset_data/test/masks"
+  augmentation:
+    horizontal_flip: true
+    vertical_flip: true
+    random_rotation_degrees: 15
+training:
+  batch_size: 4
+  epochs: 70
+  optimizer: adam
+  learning_rate: 1.0e-4
+  num_workers: 2
+  checkpoint_dir: "checkpoints/"
+  log_dir: "logs/"
+diffusion:
+  T_train: 200
+  T_sample: 3
+  s_variance_scale: 1.0
+device: "cuda"

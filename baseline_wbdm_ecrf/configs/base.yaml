@@ -1,0 +1,50 @@
+# ============================================================
+# base.yaml — shared settings for every experiment
+# Values here mirror the paper's Section 4.2 implementation
+# details unless noted otherwise.
+# ============================================================
+
+seed: 42
+
+data:
+  image_size: 256
+  channels: 3
+  datasets:
+    isic2016:
+      train_images: "data_root/ISIC2016/train/images"
+      train_masks:  "data_root/ISIC2016/train/masks"
+      test_images:  "data_root/ISIC2016/test/images"
+      test_masks:   "data_root/ISIC2016/test/masks"
+    isic2017:
+      train_images: "data_root/ISIC2017/train/images"
+      train_masks:  "data_root/ISIC2017/train/masks"
+      test_images:  "data_root/ISIC2017/test/images"
+      test_masks:   "data_root/ISIC2017/test/masks"
+    isic2018:
+      train_images: "data_root/ISIC2018/train/images"
+      train_masks:  "data_root/ISIC2018/train/masks"
+      test_images:  "data_root/ISIC2018/test/images"
+      test_masks:   "data_root/ISIC2018/test/masks"
+    ph2:
+      images: "data_root/PH2/images"
+      masks:  "data_root/PH2/masks"
+  augmentation:
+    horizontal_flip: true
+    vertical_flip: true
+    random_rotation_degrees: 15
+
+training:
+  batch_size: 4
+  epochs: 200
+  optimizer: adam
+  learning_rate: 1.0e-4
+  num_workers: 4
+  checkpoint_dir: "checkpoints/"
+  log_dir: "logs/"
+
+diffusion:
+  T_train: 1000     # training-time diffusion steps (fine-grained distribution learning)
+  T_sample: 3        # inference-time accelerated sampling steps (DDIM-style, paper Sec 3.3.2)
+  s_variance_scale: 1.0   # the 's' parameter in delta_t = 2 s (m_t - m_t^2), Eq. 7
+
+device: "cuda"

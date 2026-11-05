@@ -1,0 +1,7 @@
+*.pt
+*.pth
+runs/
+__pycache__/
+*.png
+data_root/
+baseline_preds_*/

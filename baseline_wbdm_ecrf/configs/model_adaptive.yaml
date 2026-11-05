@@ -1,0 +1,65 @@
+# ============================================================
+# model_adaptive.yaml — YOUR modified architecture:
+#   DWT: adaptive multi-frequency (LL/LH/HL/HH) + learned gate/fusion
+#   BDM: U-Net + FlashAttention + auxiliary boundary head
+#   Uncertainty: deterministic (mask-vs-boundary disagreement) by default
+#   ECRF: adaptive window size, modulated by the uncertainty map
+# ============================================================
+
+experiment_name: "wbdm_ecrf_adaptive"
+
+dwt:
+  type: "adaptive"                     # adaptive_dwt.py + frequency_gate.py
+  wavelet: "haar"
+  keep_subbands: ["LL", "LH", "HL", "HH"]
+  gate:
+    type: "se_gate"                    # squeeze-excite style per-subband gate
+    reduction_ratio: 8
+    init_bias_toward_LL: true          # init gate ~ paper's empirical energy prior (Fig. 4)
+    init_prior: [0.9987, 0.0004, 0.0004, 0.0005]  # approx LL/LH/HL/HH energy shares
+    regularization:
+      type: "prior_kl"                 # penalize large deviation from init_prior early on
+      weight: 0.01
+      warmup_epochs: 150                # relax the prior constraint after warmup
+
+bdm:
+  unet:
+    in_channels: 3          # fused subband output, same channel count as baseline
+    base_channels: 64
+    channel_mults: [1, 2, 4, 8]
+    use_flash_attention: true
+    attention_resolutions: [16]
+  boundary_head:
+    enabled: true
+    out_channels: 1
+    loss: "boundary_bce_dice"
+  bridge:
+    type: "brownian_bridge"
+
+uncertainty:
+  enabled: true
+  type: "deterministic"     # "deterministic" (default, cheap) or "stochastic" (costly)
+  deterministic:
+    metric: "xor_disagreement"   # disagreement between thresholded mask edge and boundary head
+    dilation_px: 2                # tolerance band before counting as disagreement
+  stochastic:
+    num_samples: 5
+    sampling_steps: 3        # reuse T_sample; only use if type == stochastic
+
+ecrf:
+  type: "adaptive"           # adaptive_ecrf.py
+  window_choices: [11, 21, 31]   # discrete window sizes (matches paper's Table 7 ablation grid)
+  uncertainty_thresholds: [0.33, 0.66]  # low->11, mid->21, high->31
+  sigma_spatial: 1.0
+  sigma_color: 2.0
+  sigma_ssim: 2.0
+  ssim_window: 11
+  prior_prob: 0.9
+  postprocess:
+    dilation: true
+    gaussian_smoothing: true
+
+loss_weights:
+  diffusion: 1.0
+  boundary: 0.3
+  gate_regularization: 0.01

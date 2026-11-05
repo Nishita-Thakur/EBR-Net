@@ -1,0 +1,47 @@
+experiment_name: "wbdm_ecrf_isolate_dwt_only"
+
+dwt:
+  type: "adaptive"
+  wavelet: "haar"
+  keep_subbands: ["LL", "LH", "HL", "HH"]
+  gate:
+    type: "se_gate"
+    reduction_ratio: 8
+    init_bias_toward_LL: true
+    init_prior: [0.9987, 0.0004, 0.0004, 0.0005]
+    regularization:
+      type: "prior_kl"
+      weight: 0.01
+      warmup_epochs: 20
+
+bdm:
+  unet:
+    in_channels: 3
+    base_channels: 64
+    channel_mults: [1, 2, 4, 8]
+    use_flash_attention: true
+    attention_resolutions: [16]
+  boundary_head:
+    enabled: false
+  bridge:
+    type: "brownian_bridge"
+
+uncertainty:
+  enabled: false
+
+ecrf:
+  type: "static"
+  window_size: 11
+  sigma_spatial: 1.0
+  sigma_color: 2.0
+  sigma_ssim: 2.0
+  ssim_window: 11
+  prior_prob: 0.9
+  postprocess:
+    dilation: true
+    gaussian_smoothing: true
+
+loss_weights:
+  diffusion: 1.0
+  boundary: 0.0
+  gate_regularization: 0.01
