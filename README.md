@@ -2,7 +2,8 @@
 
 Code for **EBR-Net**, a deterministic skin-lesion segmentation network, and for the comparison models used in the accompanying paper.
 
-> Paper: `<TITLE, AUTHORS, VENUE/arXiv LINK>`
+> Paper: `<EBR-Net: A pretrained encoder–decoder network with residual boundary
+refinement for skin lesion segmentation, Nishita Thakur>`
 
 ## Overview
 
@@ -65,50 +66,7 @@ Expected layout for each dataset:
     test/{images,masks}
 ```
 
-## Checkpoints and predictions
-
-Model weights and the baseline predictions are too large for the repository. Download them from:
-
-- `<LINK TO RELEASE / ZENODO / DRIVE>`
-
-## Usage
-
-**Train / evaluate EBR-Net**
-
-```bash
-# TODO: replace with your actual training and evaluation commands
-python <train_script>.py --<args>
-python <eval_script>.py --<args>
-```
-
-**Qualitative comparison figure**
-
-```bash
-python make_fig_cmp_all_v2.py \
-    --test_images <data_root>/ISIC2017/test/images \
-    --test_masks  <data_root>/ISIC2017/test/masks \
-    --proposed_ckpt <path/to/ebr_net/best.pt> \
-    --zoo_dir <path/to/comparison/checkpoints> \
-    --baseline_dir <path/to/baseline_predictions>
-```
-
-The script selects test images by a fixed rule (see `--min_other`, `--min_prop`, `--exclude` in the script). It selects images where EBR-Net has the highest Dice, so the figure is not a random sample of the test set.
-
 ## Note on the WBDM-ECRF baseline
 
 `baseline_wbdm_ecrf/` contains **our own retraining of WBDM-ECRF** (Ji et al., 2026), written by us because no official code was available. It is not the authors' code, and its numbers may differ from those reported in the original paper.
 
-## Citation
-
-```bibtex
-@article{<KEY>,
-  title   = {<TITLE>},
-  author  = {<AUTHORS>},
-  journal = {<VENUE>},
-  year    = {<YEAR>}
-}
-```
-
-## License
-
-Released under the `<MIT / OTHER>` license. See `LICENSE`.
