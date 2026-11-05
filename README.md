@@ -46,7 +46,7 @@ See the paper for the full tables, the protocol and the statistical tests.
 ## Installation
 
 ```bash
-git clone https://github.com/<YOUR-USERNAME>/EBR-Net.git
+git clone https://github.com/Nishita-Thakur/EBR-Net.git
 cd EBR-Net
 pip install -r requirements.txt
 ```
